@@ -1,15 +1,11 @@
-from rest_framework.throttling import UserRateThrottle
+from rest_framework.throttling import ScopedRateThrottle
 
-class SubscriptionThrottle(UserRateThrottle):
-    scope = "non_subscribed"
-    def get_rate(self):
-        rate = super().get_rate()
-        print(f"Throttle rate for scope '{self.scope}': {rate}")  # Debugging line
-        return rate
+class SubscriptionThrottle(ScopedRateThrottle):
+    scope = 'subscription'  
+
     def allow_request(self, request, view):
-        allowed = super().allow_request(request, view)
-        print(f"Throttle applied: {not allowed}, User: {request.user}, Scope: {self.scope}")
-        return allowed
-
-
-    
+        user = request.user
+        if user.is_authenticated and hasattr(user, 'subscription_status') and user.subscription_status:
+            return True  
+        
+        return super().allow_request(request, view)

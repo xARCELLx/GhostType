@@ -19,10 +19,10 @@ load_dotenv()
 
 
 class GhostType(APIView):
-    throttle_classes = [ UserRateThrottle  ]
-    throttle_scope='user'
+    throttle_classes = [SubscriptionThrottle]
+    throttle_scope = 'subscription'
     authentication_classes = [JWTAuthentication]
-    #permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
     
 
 
